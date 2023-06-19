@@ -2,6 +2,12 @@
 #include "MyMath.h"
 #include <cassert>
 
+Enemy::~Enemy() {
+	for (EnemyBullet* bullet : bullets_) {
+		delete bullet;
+	}
+}
+
 void Enemy::Initialize(Model* model, uint32_t textureHandle) {
 	assert(model);
 	model_ = model;
@@ -9,12 +15,16 @@ void Enemy::Initialize(Model* model, uint32_t textureHandle) {
 	kCharacterSpeed = 0.2f;
 	worldTransform_.scale_ = {1.0f, 1.0f, 1.0f};
 	worldTransform_.rotation_ = {0.0f, 0.0f, 0.0f};
-	worldTransform_.translation_ = {0.0f, 2.0f, 20.0f};
+	worldTransform_.translation_ = {15.0f, 5.0f, 60.0f};
+	Enemy::PhaseReset();
 	worldTransform_.Initialize();
 }
 
 void Enemy::Update() {
 	Vector3 move = {0.0f, 0.0f, 0.0f};
+	for (EnemyBullet* bullet : bullets_) {
+		bullet->Update();
+	}
 	switch (phase_) {
 	case Phase::Approach:
 	default:
@@ -28,20 +38,42 @@ void Enemy::Update() {
 	worldTransform_.UpdateMatrix();
 }
 
+void Enemy::Attack() {
+
+	const float kBulletSpeed = -1.0f;
+	Vector3 velocity(0, 0, kBulletSpeed);
+	velocity = TransformNormal(velocity, worldTransform_.matWorld_);
+	EnemyBullet* newBullet = new EnemyBullet();
+	newBullet->Initialize(model_, worldTransform_.translation_, velocity);
+	bullets_.push_back(newBullet);
+}
+
 void Enemy::Draw(ViewProjection& viewProjection) {
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
+	for (EnemyBullet* bullet : bullets_) {
+		bullet->Draw(viewProjection);
+	}
 }
+
+void Enemy::PhaseReset() { countdown_ = 30; }
 
 void Enemy::Approach(Vector3 move) {
 	move.z -= kCharacterSpeed;
 	worldTransform_.translation_ = Add(worldTransform_.translation_, move);
 
-	if (worldTransform_.translation_.z < 0.0f) {
+	countdown_--;
+	if (countdown_ <= 0) {
+		Enemy::Attack();
+		countdown_ = kFireInterval;
+	}
+	
+
+	if (worldTransform_.translation_.z < -10.0f) {
 		phase_ = Phase::Leave;
 	}
 }
 void Enemy::Leave(Vector3 move) {
 	move.y += kCharacterSpeed;
-	move.x -= kCharacterSpeed + 0.3f;
+	move.x -= kCharacterSpeed - 0.3f;
 	worldTransform_.translation_ = Add(worldTransform_.translation_, move);
 };
