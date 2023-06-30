@@ -13,6 +13,7 @@ public:
 	void Update();
 	void Draw(ViewProjection& viewProjection);
 	void Attack();
+	Vector3 GetWorldPosition();
 
 private:
 	WorldTransform worldTransform_;
@@ -22,4 +23,6 @@ private:
 	Input* input_ = nullptr;
 	// PlayerBullet* bullet_ = nullptr;
 	std::list<PlayerBullet*> bullets_;
+
+	
 };

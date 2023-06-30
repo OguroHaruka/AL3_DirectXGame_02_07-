@@ -1,4 +1,5 @@
 ﻿#include "Enemy.h"
+#include "Player.h"
 #include "MyMath.h"
 #include <cassert>
 
@@ -38,11 +39,25 @@ void Enemy::Update() {
 	worldTransform_.UpdateMatrix();
 }
 
-void Enemy::Attack() {
+void Enemy::Fire() {
 
-	const float kBulletSpeed = -1.0f;
-	Vector3 velocity(0, 0, kBulletSpeed);
+	assert(player_);
+
+	const float kBulletSpeed = 1.0f;
+
+	Vector3 speed = {1.0f, 1.0f, 1.0f};
+
+	Vector3 A = player_->GetWorldPosition();
+	Vector3 B = Enemy::GetWorldPosition();
+	Vector3 C = Subtract(A, B);
+	Vector3 vector = Normalize(C);
+	vector = Multiply(kBulletSpeed, vector);
+
+
+	Vector3 velocity(vector);
 	velocity = TransformNormal(velocity, worldTransform_.matWorld_);
+
+
 	EnemyBullet* newBullet = new EnemyBullet();
 	newBullet->Initialize(model_, worldTransform_.translation_, velocity);
 	bullets_.push_back(newBullet);
@@ -63,7 +78,7 @@ void Enemy::Approach(Vector3 move) {
 
 	countdown_--;
 	if (countdown_ <= 0) {
-		Enemy::Attack();
+		Enemy::Fire();
 		countdown_ = kFireInterval;
 	}
 	
@@ -77,3 +92,11 @@ void Enemy::Leave(Vector3 move) {
 	move.x -= kCharacterSpeed - 0.3f;
 	worldTransform_.translation_ = Add(worldTransform_.translation_, move);
 };
+
+Vector3 Enemy::GetWorldPosition() {
+	Vector3 worldPos;
+	worldPos.x = worldTransform_.matWorld_.m[3][0];
+	worldPos.y = worldTransform_.matWorld_.m[3][1];
+	worldPos.z = worldTransform_.matWorld_.m[3][2];
+	return worldPos;
+}

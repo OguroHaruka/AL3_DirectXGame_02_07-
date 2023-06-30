@@ -7,6 +7,32 @@ Vector3 Add(const Vector3& v1, const Vector3& v2) {
 	v.z = v1.z + v2.z;
 	return v;
 }
+Vector3 Subtract(const Vector3& v1, const Vector3& v2) {
+	Vector3 v;
+	v.x = v1.x - v2.x;
+	v.y = v1.y - v2.y;
+	v.z = v1.z - v2.z;
+	return v;
+}
+Vector3 Multiply(float scalar, const Vector3& v1) {
+	Vector3 v;
+	v.x = v1.x * scalar;
+	v.y = v1.y * scalar;
+	v.z = v1.z * scalar;
+	return v;
+}
+Vector3 Normalize(const Vector3& v1) {
+	float a, b, c, d;
+	a = v1.x * v1.x + v1.y * v1.y;
+	b = (float)sqrt(a);
+	c = b * b + v1.z * v1.z;
+	d = sqrtf(c);
+	Vector3 v;
+	v.x = v1.x / d;
+	v.y = v1.y / d;
+	v.z = v1.z / d;
+	return v;
+}
 Matrix4x4 Multiply(Matrix4x4 m1, Matrix4x4 m2) {
 	Matrix4x4 result;
 	result.m[0][0] = m1.m[0][0] * m2.m[0][0] + m1.m[0][1] * m2.m[1][0] + m1.m[0][2] * m2.m[2][0] +

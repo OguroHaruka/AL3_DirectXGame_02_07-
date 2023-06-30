@@ -22,8 +22,6 @@ void GameScene::Initialize() {
 
 	EnemyTexture_ = TextureManager::Load("sample.png");
 	enemy_ = new Enemy();
-	Enemymodel_ = Model::Create();
-	enemy_->Initialize(Enemymodel_, EnemyTexture_);
 
 	worldTransform_.Initialize();
 	viewProjection_.Initialize();
@@ -32,6 +30,11 @@ void GameScene::Initialize() {
 	player_ = new Player();
 
 	player_->Initialize(model_, textureHandle_);
+
+	Enemymodel_ = Model::Create();
+	enemy_->Initialize(Enemymodel_, EnemyTexture_);
+	enemy_->SetPlayer(player_);
+
 
 	debugCamera_ = new DebugCamera(1280, 720);
 
