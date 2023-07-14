@@ -21,7 +21,8 @@ public:
 		Approach,
 		Leave,
 	};
-
+	void OnCollision();
+	const std::list<EnemyBullet*>& GetBullets() const { return bullets_; }
 	void SetPlayer(Player* player) { player_ = player; }
 	Vector3 GetWorldPosition();
 

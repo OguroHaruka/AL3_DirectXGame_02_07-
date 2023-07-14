@@ -23,9 +23,7 @@ void Enemy::Initialize(Model* model, uint32_t textureHandle) {
 
 void Enemy::Update() {
 	Vector3 move = {0.0f, 0.0f, 0.0f};
-	for (EnemyBullet* bullet : bullets_) {
-		bullet->Update();
-	}
+
 	switch (phase_) {
 	case Phase::Approach:
 	default:
@@ -37,6 +35,18 @@ void Enemy::Update() {
 	}
 
 	worldTransform_.UpdateMatrix();
+
+
+	for (EnemyBullet* bullet : bullets_) {
+		bullet->Update();
+	}
+	bullets_.remove_if([](EnemyBullet* bullet) {
+		if (bullet->IsDead()) {
+			delete bullet;
+			return true;
+		}
+		return false;
+	});
 }
 
 void Enemy::Fire() {
@@ -44,8 +54,6 @@ void Enemy::Fire() {
 	assert(player_);
 
 	const float kBulletSpeed = 1.0f;
-
-	Vector3 speed = {1.0f, 1.0f, 1.0f};
 
 	Vector3 A = player_->GetWorldPosition();
 	Vector3 B = Enemy::GetWorldPosition();
@@ -73,7 +81,7 @@ void Enemy::Draw(ViewProjection& viewProjection) {
 void Enemy::PhaseReset() { countdown_ = 30; }
 
 void Enemy::Approach(Vector3 move) {
-	move.z -= kCharacterSpeed;
+	//move.z -= kCharacterSpeed;
 	worldTransform_.translation_ = Add(worldTransform_.translation_, move);
 
 	countdown_--;
@@ -100,3 +108,5 @@ Vector3 Enemy::GetWorldPosition() {
 	worldPos.z = worldTransform_.matWorld_.m[3][2];
 	return worldPos;
 }
+
+void Enemy::OnCollision() {}

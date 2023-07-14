@@ -2,6 +2,7 @@
 #include "ImGuiManager.h"
 #include "MyMath.h"
 #include <cassert>
+#include "Enemy.h"
 
 void Player::Initialize(Model* model, uint32_t textureHandle) {
 	assert(model);
@@ -82,13 +83,6 @@ void Player::Update() {
 	// worldTransform_.matWorld_ = MakeAffineMatrix(
 	//     worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
 
-	bullets_.remove_if([](PlayerBullet* bullet) {
-		if (bullet->IsDead()) {
-			delete bullet;
-			return true;
-		}
-		return false;
-	});
 
 	const float kCharacterSpeed = 0.2f;
 
@@ -116,10 +110,18 @@ void Player::Update() {
 
 	Player::Rotate();
 	Player::Attack();
+
 	for (PlayerBullet* bullet : bullets_) {
 		bullet->Update();
 	}
 
+	bullets_.remove_if([](PlayerBullet* bullet) {
+		if (bullet->IsDead()) {
+			delete bullet;
+			return true;
+		}
+		return false;
+	});
 	ImGui::Begin("Debug");
 	float playerPos[] = {
 	    worldTransform_.translation_.x, worldTransform_.translation_.y,
@@ -161,4 +163,6 @@ Vector3 Player::GetWorldPosition() {
 	worldPos.y = worldTransform_.matWorld_.m[3][1];
 	worldPos.z = worldTransform_.matWorld_.m[3][2];
 	return worldPos;
-}
+}  
+
+void Player::OnCollision() {}
