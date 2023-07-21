@@ -7,6 +7,7 @@
 #include "Input.h"
 #include "Model.h"
 #include "Player.h"
+#include "Skydome.h"
 #include "SafeDelete.h"
 #include "Sprite.h"
 #include "ViewProjection.h"
@@ -64,6 +65,10 @@ private: // メンバ変数
 	Enemy* enemy_ = nullptr;
 	uint32_t EnemyTexture_ = 0;
 	Model* Enemymodel_ = nullptr;
+
+	Skydome* skydome_ = nullptr;
+	uint32_t skydomeTexture_ = 0;
+	Model* skydomeModel_ = nullptr;
 
 	/// <summary>
 	/// ゲームシーン用

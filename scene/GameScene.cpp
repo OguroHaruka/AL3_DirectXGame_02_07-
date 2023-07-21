@@ -9,6 +9,8 @@ GameScene::~GameScene() {
 	delete model_;
 	delete player_;
 	delete enemy_;
+	delete skydome_;
+	delete skydomeModel_;
 	delete debugCamera_;
 }
 
@@ -35,6 +37,11 @@ void GameScene::Initialize() {
 	enemy_->Initialize(Enemymodel_, EnemyTexture_);
 	enemy_->SetPlayer(player_);
 
+	skydome_ = new Skydome();
+
+	skydomeModel_ = Model::CreateFromOBJ("skydome", true);
+	skydomeTexture_ = TextureManager::Load("uvChecker.png");
+	skydome_->Initialize(skydomeModel_,skydomeTexture_);
 
 	debugCamera_ = new DebugCamera(1280, 720);
 
@@ -91,6 +98,7 @@ void GameScene::Draw() {
 
 	player_->Draw(viewProjection_);
 	enemy_->Draw(viewProjection_);
+	skydome_->Draw(viewProjection_);
 
 	/// </summary>
 
