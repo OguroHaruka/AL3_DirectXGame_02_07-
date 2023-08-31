@@ -12,9 +12,17 @@ GameScene::~GameScene() {
 	delete skydome_;
 	delete skydomeModel_;
 	delete debugCamera_;
+	delete gameClearSprite_;
+	delete gameOverSprite_;
 }
 
 void GameScene::Initialize() {
+
+	gameClearTexture_ = TextureManager::Load("GameClear.png");
+	gameClearSprite_ = Sprite::Create(gameClearTexture_, {150, 200});
+
+	gameOverTexture_ = TextureManager::Load("GameOver.png");
+	gameOverSprite_ = Sprite::Create(gameOverTexture_, {150, 200});
 
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
@@ -97,6 +105,7 @@ void GameScene::Draw() {
 	/// ここに3Dオブジェクトの描画処理を追加できる
 
 	player_->Draw(viewProjection_);
+	
 	enemy_->Draw(viewProjection_);
 	skydome_->Draw(viewProjection_);
 
@@ -113,6 +122,14 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
+
+	if (enemy_->GetIsDead() == true) {
+		gameClearSprite_->Draw();
+	}
+
+	if (player_->GetIsDead() == true) {
+		gameOverSprite_->Draw();
+	}
 
 	// スプライト描画後処理
 	Sprite::PostDraw();

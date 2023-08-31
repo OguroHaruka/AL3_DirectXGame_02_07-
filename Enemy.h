@@ -25,6 +25,7 @@ public:
 	const std::list<EnemyBullet*>& GetBullets() const { return bullets_; }
 	void SetPlayer(Player* player) { player_ = player; }
 	Vector3 GetWorldPosition();
+	bool GetIsDead() { return isDead_; }
 
 private:
 	WorldTransform worldTransform_;
@@ -36,6 +37,10 @@ private:
 	static const int kFireInterval = 60;
 	int32_t countdown_ = 0;
 	float kCharacterSpeed;
+	float HP = 5;
+	bool isDead_ = false;
+	bool moveFlagX = false;
+	bool moveFlagY = false;
 
 	Player* player_ = nullptr;
 };

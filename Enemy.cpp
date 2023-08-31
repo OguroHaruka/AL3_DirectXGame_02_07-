@@ -16,17 +16,41 @@ void Enemy::Initialize(Model* model, uint32_t textureHandle) {
 	kCharacterSpeed = 0.2f;
 	worldTransform_.scale_ = {1.0f, 1.0f, 1.0f};
 	worldTransform_.rotation_ = {0.0f, 0.0f, 0.0f};
-	worldTransform_.translation_ = {15.0f, 5.0f, 60.0f};
+	worldTransform_.translation_ = {0.0f, 5.0f, 60.0f};
 	Enemy::PhaseReset();
 	worldTransform_.Initialize();
 }
 
 void Enemy::Update() {
+	if (HP <= 0) {
+		isDead_ = true;
+	}
+	
 	Vector3 move = {0.0f, 0.0f, 0.0f};
 
 	switch (phase_) {
 	case Phase::Approach:
 	default:
+		if (moveFlagX == false) {
+			worldTransform_.translation_.x -= kCharacterSpeed;
+		} else if (moveFlagX == true) {
+			worldTransform_.translation_.x += kCharacterSpeed;
+		}
+		if (worldTransform_.translation_.x <= -50.0f) {
+			moveFlagX = true;
+		} else if (worldTransform_.translation_.x >= 50.0f) {
+			moveFlagX = false;
+		}
+		if (moveFlagY == false) {
+			worldTransform_.translation_.y -= kCharacterSpeed;
+		} else if (moveFlagY == true) {
+			worldTransform_.translation_.y += kCharacterSpeed;
+		}
+		if (worldTransform_.translation_.y <= -10.0f) {
+			moveFlagY = true;
+		} else if (worldTransform_.translation_.y >= 10.0f) {
+			moveFlagY = false;
+		}
 		Enemy::Approach(move);
 
 		break;
@@ -50,38 +74,40 @@ void Enemy::Update() {
 }
 
 void Enemy::Fire() {
+	if (isDead_ == false) {
 
-	assert(player_);
+		assert(player_);
 
-	const float kBulletSpeed = 1.0f;
+		const float kBulletSpeed = 1.0f;
 
-	Vector3 A = player_->GetWorldPosition();
-	Vector3 B = Enemy::GetWorldPosition();
-	Vector3 C = Subtract(A, B);
-	Vector3 vector = Normalize(C);
-	vector = Multiply(kBulletSpeed, vector);
+		Vector3 A = player_->GetWorldPosition();
+		Vector3 B = Enemy::GetWorldPosition();
+		Vector3 C = Subtract(A, B);
+		Vector3 vector = Normalize(C);
+		vector = Multiply(kBulletSpeed, vector);
 
+		Vector3 velocity(vector);
+		velocity = TransformNormal(velocity, worldTransform_.matWorld_);
 
-	Vector3 velocity(vector);
-	velocity = TransformNormal(velocity, worldTransform_.matWorld_);
-
-
-	EnemyBullet* newBullet = new EnemyBullet();
-	newBullet->Initialize(model_, worldTransform_.translation_, velocity);
-	bullets_.push_back(newBullet);
+		EnemyBullet* newBullet = new EnemyBullet();
+		newBullet->Initialize(model_, worldTransform_.translation_, velocity);
+		bullets_.push_back(newBullet);
+	}
 }
 
 void Enemy::Draw(ViewProjection& viewProjection) {
-	model_->Draw(worldTransform_, viewProjection, textureHandle_);
-	for (EnemyBullet* bullet : bullets_) {
-		bullet->Draw(viewProjection);
+	if (isDead_ == false) {
+		model_->Draw(worldTransform_, viewProjection, textureHandle_);
+		for (EnemyBullet* bullet : bullets_) {
+			bullet->Draw(viewProjection);
+		}
 	}
 }
 
 void Enemy::PhaseReset() { countdown_ = 30; }
 
 void Enemy::Approach(Vector3 move) {
-	//move.z -= kCharacterSpeed;
+	
 	worldTransform_.translation_ = Add(worldTransform_.translation_, move);
 
 	countdown_--;
@@ -109,4 +135,4 @@ Vector3 Enemy::GetWorldPosition() {
 	return worldPos;
 }
 
-void Enemy::OnCollision() {}
+void Enemy::OnCollision() { HP -= 1; }

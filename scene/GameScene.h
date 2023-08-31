@@ -70,6 +70,12 @@ private: // メンバ変数
 	uint32_t skydomeTexture_ = 0;
 	Model* skydomeModel_ = nullptr;
 
+	uint32_t gameClearTexture_ = 0;
+	Sprite* gameClearSprite_ = nullptr;
+
+	uint32_t gameOverTexture_ = 0;
+	Sprite* gameOverSprite_ = nullptr;
+
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>

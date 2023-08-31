@@ -27,6 +27,10 @@ void Player::Rotate() {
 
 void Player::Update() {
 
+	if (HP <= 0) {
+		isDead_ = true;
+	}
+
 	Vector3 move = {0.0f, 0.0f, 0.0f};
 
 	// Matrix4x4 matScale;
@@ -85,17 +89,18 @@ void Player::Update() {
 
 
 	const float kCharacterSpeed = 0.2f;
+	if (isDead_ == false) {
 
-	if (input_->PushKey(DIK_LEFT)) {
-		move.x -= kCharacterSpeed;
-	} else if (input_->PushKey(DIK_RIGHT)) {
-		move.x += kCharacterSpeed;
-	} else if (input_->PushKey(DIK_UP)) {
-		move.y += kCharacterSpeed;
-	} else if (input_->PushKey(DIK_DOWN)) {
-		move.y -= kCharacterSpeed;
+		if (input_->PushKey(DIK_LEFT)) {
+			move.x -= kCharacterSpeed;
+		} else if (input_->PushKey(DIK_RIGHT)) {
+			move.x += kCharacterSpeed;
+		} else if (input_->PushKey(DIK_UP)) {
+			move.y += kCharacterSpeed;
+		} else if (input_->PushKey(DIK_DOWN)) {
+			move.y -= kCharacterSpeed;
+		}
 	}
-
 	const float kMoveLimitX = 33.0f;
 	const float kMoveLimitY = 18.0f;
 
@@ -122,7 +127,7 @@ void Player::Update() {
 		}
 		return false;
 	});
-	ImGui::Begin("Debug");
+	/*ImGui::Begin("Debug");
 	float playerPos[] = {
 	    worldTransform_.translation_.x, worldTransform_.translation_.y,
 	    worldTransform_.translation_.z};
@@ -130,17 +135,20 @@ void Player::Update() {
 	worldTransform_.translation_.x = playerPos[0];
 	worldTransform_.translation_.y = playerPos[1];
 	worldTransform_.translation_.z = playerPos[2];
-	ImGui::End();
+	ImGui::End();*/
 }
 
 void Player::Attack() {
-	if (input_->TriggerKey(DIK_SPACE)) {
-		const float kBulletSpeed = 1.0f;
-		Vector3 velocity(0, 0, kBulletSpeed);
-		velocity = TransformNormal(velocity, worldTransform_.matWorld_);
-		PlayerBullet* newBullet = new PlayerBullet();
-		newBullet->Initialize(model_, worldTransform_.translation_, velocity);
-		bullets_.push_back(newBullet);
+	if (isDead_ == false) {
+
+		if (input_->TriggerKey(DIK_SPACE)) {
+			const float kBulletSpeed = 1.0f;
+			Vector3 velocity(0, 0, kBulletSpeed);
+			velocity = TransformNormal(velocity, worldTransform_.matWorld_);
+			PlayerBullet* newBullet = new PlayerBullet();
+			newBullet->Initialize(model_, worldTransform_.translation_, velocity);
+			bullets_.push_back(newBullet);
+		}
 	}
 }
 
@@ -151,9 +159,11 @@ Player::~Player() {
 }
 
 void Player::Draw(ViewProjection& viewProjection) {
-	model_->Draw(worldTransform_, viewProjection, textureHandle_);
-	for (PlayerBullet* bullet : bullets_) {
-		bullet->Draw(viewProjection);
+	if (isDead_ == false) {
+		model_->Draw(worldTransform_, viewProjection, textureHandle_);
+		for (PlayerBullet* bullet : bullets_) {
+			bullet->Draw(viewProjection);
+		}
 	}
 }
 
@@ -165,4 +175,4 @@ Vector3 Player::GetWorldPosition() {
 	return worldPos;
 }  
 
-void Player::OnCollision() {}
+void Player::OnCollision() { HP -= 1; }

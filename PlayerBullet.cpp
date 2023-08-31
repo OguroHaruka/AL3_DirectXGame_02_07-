@@ -1,4 +1,5 @@
 ﻿#include "PlayerBullet.h"
+#include "Enemy.h"
 #include <cassert>
 
 void PlayerBullet::Initialize(Model* model, const Vector3& position, const Vector3& velocity) {
@@ -31,4 +32,5 @@ Vector3 PlayerBullet::GetWorldPosition() {
 	return worldPos;
 }
 
-void PlayerBullet::OnCollision() { isDead_ = true; }
+void PlayerBullet::OnCollision() { isDead_ = true;
+}

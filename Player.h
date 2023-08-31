@@ -16,6 +16,7 @@ public:
 	Vector3 GetWorldPosition();
 	void OnCollision();
 	const std::list<PlayerBullet*>& GetBullets() const { return bullets_; }
+	bool GetIsDead() { return isDead_; }
 
 private:
 	WorldTransform worldTransform_;
@@ -25,6 +26,7 @@ private:
 	Input* input_ = nullptr;
 	// PlayerBullet* bullet_ = nullptr;
 	std::list<PlayerBullet*> bullets_;
-
+	float HP = 5;
+	bool isDead_ = false;
 	
 };

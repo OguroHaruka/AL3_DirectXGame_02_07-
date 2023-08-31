@@ -4,6 +4,8 @@
 #include "MyMath.h"
 #include "WorldTransform.h"
 
+class Enemy;
+
 class PlayerBullet {
 public:
 	void Initialize(Model* model, const Vector3& position, const Vector3& velocity);
@@ -21,4 +23,6 @@ private:
 	static const int32_t kLifeTime = 60 * 5;
 	int32_t deathTimer_ = kLifeTime;
 	bool isDead_ = false;
+
+	Enemy* enemy_ = nullptr;
 };
