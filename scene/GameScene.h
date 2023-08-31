@@ -4,6 +4,7 @@
 #include "DebugCamera.h"
 #include "DirectXCommon.h"
 #include "Enemy.h"
+#include "RailCamera.h"
 #include "Input.h"
 #include "Model.h"
 #include "Player.h"
@@ -67,8 +68,10 @@ private: // メンバ変数
 	Model* Enemymodel_ = nullptr;
 
 	Skydome* skydome_ = nullptr;
-	uint32_t skydomeTexture_ = 0;
 	Model* skydomeModel_ = nullptr;
+
+	RailCamera* ralicamera_ = nullptr;
+
 
 	/// <summary>
 	/// ゲームシーン用

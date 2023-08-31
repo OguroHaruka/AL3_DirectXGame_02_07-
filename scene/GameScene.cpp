@@ -40,8 +40,7 @@ void GameScene::Initialize() {
 	skydome_ = new Skydome();
 
 	skydomeModel_ = Model::CreateFromOBJ("skydome", true);
-	skydomeTexture_ = TextureManager::Load("uvChecker.png");
-	skydome_->Initialize(skydomeModel_,skydomeTexture_);
+	skydome_->Initialize(skydomeModel_);
 
 	debugCamera_ = new DebugCamera(1280, 720);
 
