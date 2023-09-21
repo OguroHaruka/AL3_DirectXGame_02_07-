@@ -4,7 +4,7 @@
 #include <cassert>
 #include "Enemy.h"
 
-void Player::Initialize(Model* model, uint32_t textureHandle) {
+void Player::Initialize(Model* model, uint32_t textureHandle,Vector3 playerPosition) {
 	assert(model);
 	model_ = model;
 	textureHandle_ = textureHandle;
@@ -12,6 +12,7 @@ void Player::Initialize(Model* model, uint32_t textureHandle) {
 	worldTransform_.scale_ = {1.0f, 1.0f, 1.0f};
 	worldTransform_.rotation_ = {0.0f, 0.0f, 0.0f};
 	worldTransform_.translation_ = {0.0f, 0.0f, 0.0f};
+	worldTransform_.translation_ = Add(worldTransform_.translation_, playerPosition);
 	worldTransform_.Initialize();
 }
 
@@ -28,61 +29,6 @@ void Player::Rotate() {
 void Player::Update() {
 
 	Vector3 move = {0.0f, 0.0f, 0.0f};
-
-	// Matrix4x4 matScale;
-	// matScale.m[0][0] = worldTransform_.scale_.x;
-	// matScale.m[1][1] = worldTransform_.scale_.y;
-	// matScale.m[2][2] = worldTransform_.scale_.z;
-	// matScale.m[3][3] = 1;
-
-	// Matrix4x4 matRotX;
-	// matRotX.m[0][0] = 1;
-	// matRotX.m[1][1] = cosf(worldTransform_.rotation_.x);
-	// matRotX.m[2][1] = -sinf(worldTransform_.rotation_.x);
-	// matRotX.m[1][2] = sinf(worldTransform_.rotation_.x);
-	// matRotX.m[2][2] = cosf(worldTransform_.rotation_.x);
-	// matRotX.m[3][3] = 1;
-
-	// Matrix4x4 matRotY;
-	// matRotY.m[0][0] = cosf(worldTransform_.rotation_.y);
-	// matRotY.m[1][1] = 1;
-	// matRotY.m[0][2] = -sinf(worldTransform_.rotation_.y);
-	// matRotY.m[2][0] = sinf(worldTransform_.rotation_.y);
-	// matRotY.m[2][2] = cosf(worldTransform_.rotation_.y);
-	// matRotY.m[3][3] = 1;
-
-	// Matrix4x4 matRotZ;
-	// matRotZ.m[0][0] = cosf(worldTransform_.rotation_.z);
-	// matRotZ.m[1][0] = sinf(worldTransform_.rotation_.z);
-	// matRotZ.m[0][1] = -sinf(worldTransform_.rotation_.z);
-	// matRotZ.m[1][1] = cosf(worldTransform_.rotation_.z);
-	// matRotZ.m[2][2] = 1;
-	// matRotZ.m[3][3] = 1;
-
-	// Matrix4x4 matTrans;
-	// matTrans.m[0][0] = 1;
-	// matTrans.m[1][1] = 1;
-	// matTrans.m[2][2] = 1;
-	// matTrans.m[3][3] = 1;
-	// matTrans.m[3][0] = worldTransform_.translation_.x;
-	// matTrans.m[3][1] = worldTransform_.translation_.y;
-	// matTrans.m[3][2] = worldTransform_.translation_.z;
-
-	// worldTransform_.TransferMatrix();
-
-	// void UpdateMatrix();
-
-	// Matrix4x4 a = Multiply(matRotZ, matRotX);
-	// Matrix4x4 b = Multiply(a, matRotY);
-	// Matrix4x4 matRot = b;
-
-	// Matrix4x4 c = Multiply(matScale, matRot);
-	// Matrix4x4 d = Multiply(c, matTrans);
-	// worldTransform_.matWorld_ = d;
-
-	// worldTransform_.matWorld_ = MakeAffineMatrix(
-	//     worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
-
 
 	const float kCharacterSpeed = 0.2f;
 
@@ -122,15 +68,7 @@ void Player::Update() {
 		}
 		return false;
 	});
-	ImGui::Begin("Debug");
-	float playerPos[] = {
-	    worldTransform_.translation_.x, worldTransform_.translation_.y,
-	    worldTransform_.translation_.z};
-	ImGui::SliderFloat3("PlayerPos", playerPos, -30.0f, 30.0f);
-	worldTransform_.translation_.x = playerPos[0];
-	worldTransform_.translation_.y = playerPos[1];
-	worldTransform_.translation_.z = playerPos[2];
-	ImGui::End();
+	
 }
 
 void Player::Attack() {
@@ -139,7 +77,7 @@ void Player::Attack() {
 		Vector3 velocity(0, 0, kBulletSpeed);
 		velocity = TransformNormal(velocity, worldTransform_.matWorld_);
 		PlayerBullet* newBullet = new PlayerBullet();
-		newBullet->Initialize(model_, worldTransform_.translation_, velocity);
+		newBullet->Initialize(model_, GetWorldPosition(), velocity);
 		bullets_.push_back(newBullet);
 	}
 }
@@ -166,3 +104,5 @@ Vector3 Player::GetWorldPosition() {
 }  
 
 void Player::OnCollision() {}
+
+void Player::SetParent(const WorldTransform* parent) { worldTransform_.parent_ = parent; }

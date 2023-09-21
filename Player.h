@@ -8,11 +8,12 @@
 class Player {
 public:
 	~Player();
-	void Initialize(Model* model, uint32_t textureHandle);
+	void Initialize(Model* model, uint32_t textureHandle,Vector3 playerPosition);
 	void Rotate();
 	void Update();
 	void Draw(ViewProjection& viewProjection);
 	void Attack();
+	void SetParent(const WorldTransform* parent);
 	Vector3 GetWorldPosition();
 	void OnCollision();
 	const std::list<PlayerBullet*>& GetBullets() const { return bullets_; }

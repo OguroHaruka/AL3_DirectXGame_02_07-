@@ -70,8 +70,10 @@ private: // メンバ変数
 	Skydome* skydome_ = nullptr;
 	Model* skydomeModel_ = nullptr;
 
-	RailCamera* ralicamera_ = nullptr;
+	RailCamera* railCamera_ = nullptr;
 
+	Vector3 worldPos;
+	Vector3 rotation;
 
 	/// <summary>
 	/// ゲームシーン用

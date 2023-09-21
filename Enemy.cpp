@@ -61,11 +61,6 @@ void Enemy::Fire() {
 	Vector3 vector = Normalize(C);
 	vector = Multiply(kBulletSpeed, vector);
 
-
-	/*Vector3 velocity(vector);
-	velocity = TransformNormal(velocity, worldTransform_.matWorld_);*/
-
-
 	EnemyBullet* newBullet = new EnemyBullet();
 	newBullet->Initialize(model_, worldTransform_.translation_, vector);
 	bullets_.push_back(newBullet);

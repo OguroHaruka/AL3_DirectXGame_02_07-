@@ -4,8 +4,10 @@
 
 class RailCamera {
 public:
-	void Initialize(WorldTransform worldTransform);
+	void Initialize(Vector3& worldPos,Vector3& rotation);
 	void Update();
+	ViewProjection& GetViewProjection() { return viewProjection_; }
+	WorldTransform& GetWorldTransform() { return worldTransform_; };
 
 private:
 	WorldTransform worldTransform_;
