@@ -13,6 +13,7 @@
 #include "Sprite.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
+#include <sstream>
 
 /// <summary>
 /// ゲームシーン
@@ -47,6 +48,14 @@ public: // メンバ関数
 
 	void CheckAllCollisions();
 
+	void AddEnemyBullet(EnemyBullet* enemyBullet);
+
+	void AddEnemy(Vector3 position);
+
+	void LoadEnemyPopData();
+
+	void UpdateEnemyPopCommands();
+
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
@@ -71,6 +80,15 @@ private: // メンバ変数
 	Model* skydomeModel_ = nullptr;
 
 	RailCamera* railCamera_ = nullptr;
+
+	EnemyBullet* enemyBullet_ = nullptr;
+	std::list<EnemyBullet*> enemyBullets_;
+	std::list<Enemy*> enemys_;
+
+	std::stringstream enemyPopCommands;
+
+	int standFlag = false;
+	int standTime = 0;
 
 	Vector3 worldPos;
 	Vector3 rotation;
