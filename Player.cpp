@@ -15,9 +15,11 @@ void Player::Initialize(Model* model, uint32_t textureHandle,Vector3 playerPosit
 	worldTransform_.translation_ = {0.0f, 0.0f, 0.0f};
 	worldTransform_.translation_ = Add(worldTransform_.translation_, playerPosition);
 	worldTransform3DReticle_.Initialize();
+	// 02_14の29ページ
 	uint32_t textureReticle = TextureManager::Load("Reticle.png");
 	sprite2DReticle_ =
 	    Sprite::Create(textureReticle, {640.0f, 360.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
+	///////////
 }
 
 void Player::Rotate() {
@@ -82,9 +84,7 @@ void Player::Update(ViewProjection& viewProjection) {
 	worldTransform3DReticle_.translation_ = Add(GetWorldPosition(), offset);
 	worldTransform3DReticle_.UpdateMatrix();
 	worldTransform3DReticle_.TransferMatrix();
-	 worldTransform3DReticle_.UpdateMatrix();
-	 worldTransform3DReticle_.TransferMatrix();
-
+	 // 02_14の35ページ
 	 Vector3 positionReticle = {
 	     worldTransform3DReticle_.matWorld_.m[3][0], worldTransform3DReticle_.matWorld_.m[3][1],
 	     worldTransform3DReticle_.matWorld_.m[3][2]};
@@ -95,7 +95,7 @@ void Player::Update(ViewProjection& viewProjection) {
 	     matViewport));
 	 positionReticle = Transform(positionReticle, matViewProjectionViewport);
 	 sprite2DReticle_->SetPosition(Vector2(positionReticle.x, positionReticle.y));
-	 
+	 ///////////////
 }
 
 void Player::Attack() {
@@ -106,11 +106,13 @@ void Player::Attack() {
 		PlayerBullet* newBullet = new PlayerBullet();
 		newBullet->Initialize(model_, GetWorldPosition(), velocity);
 		bullets_.push_back(newBullet);
+		//02_14の11ページ
 		velocity = Subtract(
 		    {worldTransform3DReticle_.matWorld_.m[3][0], worldTransform3DReticle_.matWorld_.m[3][1],
 		     worldTransform3DReticle_.matWorld_.m[3][2]},
 		    GetWorldPosition());
 		velocity = Multiply(kBulletSpeed, Normalize(velocity));
+		////////////
 	}
 }
 
@@ -118,7 +120,9 @@ Player::~Player() {
 	for (PlayerBullet* bullet : bullets_) {
 		delete bullet;
 	}
+	// 02_14の30ページ
 	delete sprite2DReticle_;
+	//////////
 }
 
 void Player::Draw(ViewProjection& viewProjection) {

@@ -58,7 +58,9 @@ void GameScene::Initialize() {
 
 	LoadEnemyPopData();
 
+	// 02_14の31ページ
 	TextureManager::Load("Reticle.png");
+	////////////
 
 	AxisIndicator::GetInstance()->SetVisible(true);
 	AxisIndicator::GetInstance()->SetTargetViewProjection(&viewProjection_);
@@ -156,7 +158,9 @@ void GameScene::Draw() {
 	// 前景スプライト描画前処理
 	Sprite::PreDraw(commandList);
 
+	// 02_14の33ページ
 	player_->DrawUI();
+	//////////
 
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる

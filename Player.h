@@ -19,7 +19,9 @@ public:
 	Vector3 GetWorldPosition();
 	void OnCollision();
 	const std::list<PlayerBullet*>& GetBullets() const { return bullets_; }
+	// 02_14の32ページ
 	void DrawUI();
+	///////////
 
 private:
 	WorldTransform worldTransform_;
@@ -31,6 +33,7 @@ private:
 	// PlayerBullet* bullet_ = nullptr;
 	std::list<PlayerBullet*> bullets_;
 	WorldTransform worldTransform3DReticle_;
+	// 02_14の28ページ
 	Sprite* sprite2DReticle_ = nullptr;
-	
+	//////////
 };
