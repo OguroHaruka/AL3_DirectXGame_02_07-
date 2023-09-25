@@ -46,6 +46,7 @@ void Player::Update(ViewProjection& viewProjection) {
 		move.y -= kCharacterSpeed;
 	}
 
+	// 02_15の123ージ
 	 XINPUT_STATE joyState;
 
 	Vector2 spritePosition = sprite2DReticle_->GetPosition();
@@ -55,7 +56,7 @@ void Player::Update(ViewProjection& viewProjection) {
 		spritePosition.y -= (float)joyState.Gamepad.sThumbRY / SHRT_MAX * 7.0f;
 		sprite2DReticle_->SetPosition(spritePosition);
 	}
-
+	//////////
 	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
 		move.x += (float)joyState.Gamepad.sThumbLX / SHRT_MAX * kCharacterSpeed;
 		move.y += (float)joyState.Gamepad.sThumbLY / SHRT_MAX * kCharacterSpeed;
@@ -109,7 +110,8 @@ void Player::Update(ViewProjection& viewProjection) {
 	 positionReticle = Transform(positionReticle, matViewProjectionViewport);
 	 //sprite2DReticle_->SetPosition(Vector2(positionReticle.x, positionReticle.y));
 	 
-	 //02_15
+	 // 02_15の14ページ
+	 //あとで消す
 	 /* POINT mousePosition;
 	  
 	  GetCursorPos(&mousePosition);
@@ -118,16 +120,16 @@ void Player::Update(ViewProjection& viewProjection) {
 	  ScreenToClient(hwnd, &mousePosition);
 	 
 	  sprite2DReticle_->SetPosition(Vector2((float)mousePosition.x, (float)mousePosition.y));*/
+	 /////////////////
 
-	  
-
-	 
-
+	// 02_15の15ページ
 	  Matrix4x4 matVPV =
 	      Multiply(Multiply(viewProjection.matView, viewProjection.matProjection), matViewport);
 
 	  Matrix4x4 matInverseVPV = Inverse(matVPV);
+	  //////////////////
 
+	  // 02_15の16ページ
 	  Vector3 posNear = {
 	      (float)sprite2DReticle_->GetPosition().x, (float)sprite2DReticle_->GetPosition().y, 0};
 
@@ -136,7 +138,9 @@ void Player::Update(ViewProjection& viewProjection) {
 
 	  posNear = Transform(posNear, matInverseVPV);
 	  posFar = Transform(posFar, matInverseVPV);
+	  ///////////////////
 
+	  // 02_15の17ページ
 	  Vector3 mouseDirection = Subtract(posFar, posNear);
 	  mouseDirection = Normalize(mouseDirection);
 
@@ -147,8 +151,11 @@ void Player::Update(ViewProjection& viewProjection) {
 
 	  worldTransform3DReticle_.UpdateMatrix();
 	  worldTransform3DReticle_.TransferMatrix();
+	  ////////////////////
 
+	  // 02_15の18ページ
 	  ImGui::Begin("Player");
+	  //↓無視していい
 	  //ImGui::Text("2DReeticle:(%f,%f)", sprite);
 	  ImGui::Text("Near:(%+.2f,%+.2f,%+.2f)", posNear.x, posNear.y, posNear.z);
 	  ImGui::Text("Far:(%+.2f,%+.2f,%+.2f)", posFar.x, posFar.y, posFar.z);
@@ -156,10 +163,11 @@ void Player::Update(ViewProjection& viewProjection) {
 	      "3Deticle:(%+.2f,%+.2f,%+.2f)", worldTransform3DReticle_.translation_.x,
 	      worldTransform3DReticle_.translation_.y, worldTransform3DReticle_.translation_.z);
 	  ImGui::End();
+	  ////////////////////
 
 	  worldTransform_.translation_ = Add(worldTransform_.translation_, move);
 	  worldTransform_.UpdateMatrix();
-
+	
 }
 
 void Player::Attack() {
