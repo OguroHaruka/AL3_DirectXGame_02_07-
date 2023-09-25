@@ -46,7 +46,7 @@ void Player::Update(ViewProjection& viewProjection) {
 		move.y -= kCharacterSpeed;
 	}
 
-	// 02_15の123ージ
+	// 02_15の24ぺージ
 	 XINPUT_STATE joyState;
 
 	Vector2 spritePosition = sprite2DReticle_->GetPosition();
@@ -57,10 +57,13 @@ void Player::Update(ViewProjection& viewProjection) {
 		sprite2DReticle_->SetPosition(spritePosition);
 	}
 	//////////
+
+	// 02_15の23ぺージ
 	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
 		move.x += (float)joyState.Gamepad.sThumbLX / SHRT_MAX * kCharacterSpeed;
 		move.y += (float)joyState.Gamepad.sThumbLY / SHRT_MAX * kCharacterSpeed;
 	}
+	///////////
 
 	const float kMoveLimitX = 18.0f;
 	const float kMoveLimitY = 10.0f;
@@ -185,6 +188,7 @@ void Player::Attack() {
 		velocity = Multiply(kBulletSpeed, Normalize(velocity));
 	}
 
+	// 02_15の25ぺージ
 	XINPUT_STATE joyState;
 
 	if (!Input::GetInstance()->GetJoystickState(0, joyState)) {
@@ -213,6 +217,7 @@ void Player::Attack() {
 		
 		bullets_.push_back(newBullet);
 	}
+	////////////////////
 }
 
 Player::~Player() {
