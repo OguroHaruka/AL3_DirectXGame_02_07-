@@ -58,7 +58,7 @@ void GameScene::Initialize() {
 
 	LoadEnemyPopData();
 
-
+	TextureManager::Load("Reticle.png");
 
 	AxisIndicator::GetInstance()->SetVisible(true);
 	AxisIndicator::GetInstance()->SetTargetViewProjection(&viewProjection_);
@@ -68,7 +68,7 @@ void GameScene::Initialize() {
 
 void GameScene::Update() {
 	railCamera_->Update();
-	player_->Update();
+	player_->Update(viewProjection_);
 	debugCamera_->Update();
 	CheckAllCollisions();
 	
@@ -155,6 +155,8 @@ void GameScene::Draw() {
 #pragma region 前景スプライト描画
 	// 前景スプライト描画前処理
 	Sprite::PreDraw(commandList);
+
+	player_->DrawUI();
 
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる

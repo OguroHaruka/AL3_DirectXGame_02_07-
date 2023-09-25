@@ -8,12 +8,16 @@ void Player::Initialize(Model* model, uint32_t textureHandle,Vector3 playerPosit
 	assert(model);
 	model_ = model;
 	textureHandle_ = textureHandle;
+	worldTransform_.Initialize();
 	input_ = Input::GetInstance();
 	worldTransform_.scale_ = {1.0f, 1.0f, 1.0f};
 	worldTransform_.rotation_ = {0.0f, 0.0f, 0.0f};
 	worldTransform_.translation_ = {0.0f, 0.0f, 0.0f};
 	worldTransform_.translation_ = Add(worldTransform_.translation_, playerPosition);
-	worldTransform_.Initialize();
+	worldTransform3DReticle_.Initialize();
+	uint32_t textureReticle = TextureManager::Load("Reticle.png");
+	sprite2DReticle_ =
+	    Sprite::Create(textureReticle, {640.0f, 360.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
 }
 
 void Player::Rotate() {
@@ -26,7 +30,7 @@ void Player::Rotate() {
 	}
 }
 
-void Player::Update() {
+void Player::Update(ViewProjection& viewProjection) {
 
 	Vector3 move = {0.0f, 0.0f, 0.0f};
 
@@ -68,7 +72,30 @@ void Player::Update() {
 		}
 		return false;
 	});
-	
+
+	const float kDistancePlayer3DReticle = 50.0f;
+	Vector3 offset = {0, 0, 1.0f};
+	offset = TransformNormal(offset, worldTransform_.matWorld_);
+	offset = Normalize(offset);
+	offset = Multiply(offset, worldTransform_.matWorld_);
+	offset = Multiply(kDistancePlayer3DReticle, Normalize(offset));
+	worldTransform3DReticle_.translation_ = Add(GetWorldPosition(), offset);
+	worldTransform3DReticle_.UpdateMatrix();
+	worldTransform3DReticle_.TransferMatrix();
+	 worldTransform3DReticle_.UpdateMatrix();
+	 worldTransform3DReticle_.TransferMatrix();
+
+	 Vector3 positionReticle = {
+	     worldTransform3DReticle_.matWorld_.m[3][0], worldTransform3DReticle_.matWorld_.m[3][1],
+	     worldTransform3DReticle_.matWorld_.m[3][2]};
+	 Matrix4x4 matViewport =
+	     MakeViewPortMatrix(0, 0, WinApp::kWindowWidth, WinApp::kWindowHeight, 0, 1);
+	 Matrix4x4 matViewProjectionViewport =
+	     Multiply(viewProjection.matView, Multiply(viewProjection.matProjection,
+	     matViewport));
+	 positionReticle = Transform(positionReticle, matViewProjectionViewport);
+	 sprite2DReticle_->SetPosition(Vector2(positionReticle.x, positionReticle.y));
+	 
 }
 
 void Player::Attack() {
@@ -79,6 +106,11 @@ void Player::Attack() {
 		PlayerBullet* newBullet = new PlayerBullet();
 		newBullet->Initialize(model_, GetWorldPosition(), velocity);
 		bullets_.push_back(newBullet);
+		velocity = Subtract(
+		    {worldTransform3DReticle_.matWorld_.m[3][0], worldTransform3DReticle_.matWorld_.m[3][1],
+		     worldTransform3DReticle_.matWorld_.m[3][2]},
+		    GetWorldPosition());
+		velocity = Multiply(kBulletSpeed, Normalize(velocity));
 	}
 }
 
@@ -86,6 +118,7 @@ Player::~Player() {
 	for (PlayerBullet* bullet : bullets_) {
 		delete bullet;
 	}
+	delete sprite2DReticle_;
 }
 
 void Player::Draw(ViewProjection& viewProjection) {
@@ -93,7 +126,11 @@ void Player::Draw(ViewProjection& viewProjection) {
 	for (PlayerBullet* bullet : bullets_) {
 		bullet->Draw(viewProjection);
 	}
+	//model_->Draw(worldTransform3DReticle_, viewProjection);
+	
 }
+
+void Player::DrawUI() { sprite2DReticle_->Draw(); }
 
 Vector3 Player::GetWorldPosition() {
 	Vector3 worldPos;
